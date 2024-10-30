@@ -3,6 +3,9 @@ import { Investimento, Pessoa, InvestimentoTotais } from "@/models/relatorioMode
 import Link from "next/link";
 import React, { useState, useEffect } from 'react';
 import { FaFileAlt } from "react-icons/fa";
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+import { Props } from "next/script";
 
 export default function CrudReport() {
     const [pessoas, setPessoas] = useState<Pessoa[]>([]);
@@ -19,8 +22,8 @@ export default function CrudReport() {
                 throw new Error(`Erro na chamada da API: ${response.statusText}`);
             }
             dataPessoa = await response.json();
-            
-            setPessoas(dataPessoa); 
+
+            setPessoas(dataPessoa);
         } catch (err) {
             if (err instanceof Error) {
                 setError(err.message);
@@ -54,6 +57,33 @@ export default function CrudReport() {
 
         } finally {
             setLoading(false);
+        }
+    };
+
+
+    const generatePDF = async () => {
+        const element = document.getElementById('relatorioContent');
+        if (element) {
+            const canvas = await html2canvas(element);
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const imgWidth = 190; // Largura da imagem no PDF
+            const pageHeight = 290; // Altura da página A4 no PDF
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            let heightLeft = imgHeight;
+            let position = 0;
+
+            pdf.addImage(imgData, 'PNG', 10, position + 10, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+
+            while (heightLeft >= 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 10, position + 10, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
+
+            pdf.save('relatorio.pdf');
         }
     };
 
@@ -123,7 +153,7 @@ export default function CrudReport() {
 
                     {/* Botões de Ação */}
                     <div className="flex space-x-2">
-                        <button className="bg-[#3CB371] text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-600 transition">
+                        <button className="bg-[#3CB371] text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-600 transition" onClick={generatePDF} >
                             Relatório
                         </button>
 
@@ -138,7 +168,7 @@ export default function CrudReport() {
                 </div>
 
                 {/* Corpo da Página */}
-                <div className="flex flex-col lg:flex-row gap-4">
+                <div id="relatorioContent"  className="flex flex-col lg:flex-row gap-4">
 
                     {/* Coluna Esquerda - Dados do Usuário */}
                     <div className="w-full lg:w-1/5 bg-gray-100 p-4 rounded-lg shadow-md">
