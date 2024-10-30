@@ -2,6 +2,7 @@
 /* import { HiOutlineDocumentReport } from 'react-icons/hi'; */
 
 import Link from "next/link";
+import { HiOutlineDocumentReport } from "react-icons/hi";
 
 export default function Home() {
   return (
@@ -13,7 +14,12 @@ export default function Home() {
         <div className="flex gap-4 items-center flex-col sm:flex-row">
           <Link href="/crud-report">
             
+          <abutton
+              className="inline-flex items-center px-4 py-2 border border-green-500 text-green-500 font-semibold rounded-lg hover:bg-green-500 hover:text-white transition-colors duration-200"
+            >
+              <HiOutlineDocumentReport className="mr-2 text-lg" />
               Relatório
+            </abutton>
           </Link>
         {/*   <Link id="/crud-relatorio" legacyBehavior>
             <a

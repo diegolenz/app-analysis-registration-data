@@ -1,5 +1,6 @@
 "use client";
 import { Investimento, Pessoa, InvestimentoTotais } from "@/models/relatorioModel";
+import Link from "next/link";
 import React, { useState, useEffect } from 'react';
 import { FaFileAlt } from "react-icons/fa";
 
@@ -11,14 +12,15 @@ export default function CrudReport() {
     const [error, setError] = useState<string | null>(null);
 
     const crudReport = async () => {
+        let dataPessoa = {};
         try {
             const response = await fetch('https://run.mocky.io/v3/7418c556-0349-4141-bb41-71238728e329'); // Substitua pelo seu URL real
             if (!response.ok) {
                 throw new Error(`Erro na chamada da API: ${response.statusText}`);
             }
-            const data = await response.json();
-            console.log(data)
-            setPessoas(data); // Assume que a resposta tem a estrutura como definida anteriormente
+            dataPessoa = await response.json();
+            
+            setPessoas(dataPessoa); 
         } catch (err) {
             if (err instanceof Error) {
                 setError(err.message);
@@ -38,10 +40,10 @@ export default function CrudReport() {
             }
             const dataInvestimentos = await responseInvestimentos.json();
             console.log(dataInvestimentos)
-            
-            setInvestimentos(dataInvestimentos); 
 
-            calcularTotais(dataInvestimentos);
+            setInvestimentos(dataInvestimentos);
+
+            calcularTotais(dataInvestimentos, dataPessoa);
         } catch (err) {
             if (err instanceof Error) {
                 setError(err.message);
@@ -59,7 +61,7 @@ export default function CrudReport() {
         crudReport();
     }, []);
 
-    const calcularTotais = async (investimentosCalc: Investimento[]) => {
+    const calcularTotais = async (investimentosCalc: Investimento[], pessoasCalc: Pessoa[]) => {
 
         let totais: InvestimentoTotais = {
             monthlyScrTotal: 0,
@@ -84,11 +86,11 @@ export default function CrudReport() {
             totais.termDepositsInvestmentsTotal += investimentosCalc[i].termDepositsInvestments;
             totais.imediateDepositsInvestmentsTotal += investimentosCalc[i].imediateDepositsInvestments;
 
-            if (pessoas[i]) {
-                totais.monthlyScrTotal += pessoas[i].monthlyScr;
-                totais.monthlyScr12Total += pessoas[i].monthlyScr12;
+            if (pessoasCalc[i]) {
+                totais.monthlyScrTotal += pessoasCalc[i].monthlyScr;
+                totais.monthlyScr12Total += pessoasCalc[i].monthlyScr12;
             }
-              
+
         }
 
         setInvestimentosTotais(totais);
@@ -124,9 +126,14 @@ export default function CrudReport() {
                         <button className="bg-[#3CB371] text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-600 transition">
                             Relatório
                         </button>
-                        <button className="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600 transition">
-                            Fechar
-                        </button>
+
+                        <Link href="/">
+
+                            <button className="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600 transition">
+                                Fechar
+                            </button>
+                        </Link>
+
                     </div>
                 </div>
 
@@ -174,20 +181,20 @@ export default function CrudReport() {
                             </thead>
                             <tbody>
                                 {investimentos.map((investimento, index) => (
-                                        <tr  key={index}  className="border-b">
-                                            <td className="p-2">{pessoas[index].name}</td>
-                                            <td className="p-2">{pessoas[index].monthlyScr || 0 }</td>
-                                            <td className="p-2">{pessoas[index].monthlyScr12 || 0 }</td>
-                                            <td className="p-2">{investimento.potentialExposure || 0 }</td>
-                                            <td className="p-2">{investimento.monthlyDebt || 0 }</td>
-                                        </tr>
+                                    <tr key={index} className="border-b">
+                                        <td className="p-2">{pessoas[index].name}</td>
+                                        <td className="p-2">{pessoas[index].monthlyScr || 0}</td>
+                                        <td className="p-2">{pessoas[index].monthlyScr12 || 0}</td>
+                                        <td className="p-2">{investimento.potentialExposure || 0}</td>
+                                        <td className="p-2">{investimento.monthlyDebt || 0}</td>
+                                    </tr>
                                 ))}
                                 <tr className="border-b">
                                     <td className="p-2">Total</td>
-                                    <td className="p-2">{ investimentosTotais.monthlyScr12Total || 0 }</td>
-                                    <td className="p-2">{ investimentosTotais.monthlyScrTotal || 0 }</td>
-                                    <td className="p-2">{ investimentosTotais.potentialExposureTotal || 0  }</td>
-                                    <td className="p-2">{ investimentosTotais.monthlyDebtTotal || 0  }</td>
+                                    <td className="p-2">{investimentosTotais.monthlyScr12Total || 0}</td>
+                                    <td className="p-2">{investimentosTotais.monthlyScrTotal || 0}</td>
+                                    <td className="p-2">{investimentosTotais.potentialExposureTotal || 0}</td>
+                                    <td className="p-2">{investimentosTotais.monthlyDebtTotal || 0}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -205,20 +212,20 @@ export default function CrudReport() {
                             </thead>
                             <tbody>
                                 {investimentos.map((investimento, index) => (
-                                        <tr  key={index}  className="border-b">
-                                            <td className="p-2">{pessoas[index].name}</td>
-                                            <td className="p-2">{investimento.realStateNetWorth || 0 }</td>
-                                            <td className="p-2">{investimento.vehiclesNetWorth || 0 }</td>
-                                            <td className="p-2">{investimento.investmentsNetWorth || 0 }</td>
-                                            <td className="p-2">0</td>
-                                        </tr>
+                                    <tr key={index} className="border-b">
+                                        <td className="p-2">{pessoas[index].name}</td>
+                                        <td className="p-2">{investimento.realStateNetWorth || 0}</td>
+                                        <td className="p-2">{investimento.vehiclesNetWorth || 0}</td>
+                                        <td className="p-2">{investimento.investmentsNetWorth || 0}</td>
+                                        <td className="p-2">0</td>
+                                    </tr>
                                 ))}
                                 <tr className="border-b">
                                     <td className="p-2">Total</td>
-                                    <td className="p-2">{ investimentosTotais.realStateNetWorthTotal }</td>
-                                    <td className="p-2">{ investimentosTotais.vehiclesNetWorthTotal }</td>
-                                    <td className="p-2">{ investimentosTotais.investmentsNetWorthTotal }</td>
-                                    <td className="p-2">{ 0 }</td>
+                                    <td className="p-2">{investimentosTotais.realStateNetWorthTotal}</td>
+                                    <td className="p-2">{investimentosTotais.vehiclesNetWorthTotal}</td>
+                                    <td className="p-2">{investimentosTotais.investmentsNetWorthTotal}</td>
+                                    <td className="p-2">{0}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -236,13 +243,13 @@ export default function CrudReport() {
                             </thead>
                             <tbody>
                                 {investimentos.map((investimento, index) => (
-                                        <tr  key={index}  className="border-b">
-                                            <td className="p-2">{pessoas[index].name}</td>
-                                            <td className="p-2">{investimento.fundsInvestments || 0 }</td>
-                                            <td className="p-2">{investimento.termDepositsInvestments || 0 }</td>
-                                            <td className="p-2">{investimento.imediateDepositsInvestments || 0 }</td>
-                                            <td className="p-2">{investimento.fundsInvestments + investimento.termDepositsInvestments + investimento.imediateDepositsInvestments}</td>
-                                        </tr>
+                                    <tr key={index} className="border-b">
+                                        <td className="p-2">{pessoas[index].name}</td>
+                                        <td className="p-2">{investimento.fundsInvestments || 0}</td>
+                                        <td className="p-2">{investimento.termDepositsInvestments || 0}</td>
+                                        <td className="p-2">{investimento.imediateDepositsInvestments || 0}</td>
+                                        <td className="p-2">{(investimento.fundsInvestments || 0) + (investimento.termDepositsInvestments || 0) + (investimento.imediateDepositsInvestments || 0)}</td>
+                                    </tr>
                                 ))}
                             </tbody>
                         </table>
