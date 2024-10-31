@@ -137,21 +137,21 @@ export default function CrudReport() {
 
 
 
-                {/* Cabeçalho */}
+                
                 <div className="flex flex-col lg:flex-row items-center justify-between gap-4 bg-gray-100 p-4 rounded-lg shadow-md">
-                    {/* Título com Ícone */}
+                    
                     <div className="flex items-center space-x-2">
                         <FaFileAlt className="text-[#3CB371] text-2xl" />
                         <h1 className="text-2xl font-bold">Relatório de Dados</h1>
                     </div>
 
-                    {/* Data de Corte */}
+                   
                     <div className="text-center text-gray-700">
                         <span className="font-semibold">Data de Corte dos Dados: </span>
                         <span>00/00/00</span>
                     </div>
 
-                    {/* Botões de Ação */}
+                    
                     <div className="flex space-x-2">
                         <button className="bg-[#3CB371] text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-600 transition" onClick={generatePDF} >
                             Relatório
@@ -167,21 +167,36 @@ export default function CrudReport() {
                     </div>
                 </div>
 
-                {/* Corpo da Página */}
-                <div id="relatorioContent"  className="flex flex-col lg:flex-row gap-4">
+                
+                <div id="relatorioContent" className="flex flex-col lg:flex-row gap-4">
 
-                    {/* Coluna Esquerda - Dados do Usuário */}
-                    <div className="w-full lg:w-1/5 bg-gray-100 p-4 rounded-lg shadow-md">
+                  
+                    <div className="w-full lg:w-2/6 bg-gray-100 p-4 rounded-lg shadow-md">
 
-                        {/*proponente */}
+                        
                         {pessoas.map((pessoa, index) => (
                             <div key={index} className="mt-4" >
                                 <div className="flex items-baseline justify-between">
-                                    <h2 className="text-2xl font-bold">{pessoa.name}</h2>
-                                    <span className="text-gray-600 text-sm">{pessoa.role}</span>
+                                    <h2 className="text-2xl font-bold">{pessoa.name} </h2>
+                                    <span className="text-gray-600 text-sm"> {pessoa.role}</span>
                                 </div>
                                 <div className="border-t-4 border-[#3CB371] my-4"></div>
-                                <div className="flex flex-col gap-2">
+                                <div className="flex justify-between">
+
+                                    <p>{pessoa.doc}</p>  <p> • {pessoa.tier}</p> <p> • Cadastro <strong>{pessoa.status}</strong>  </p> <p> • {pessoa.isa} </p>
+                               
+
+                                </div>
+
+                                <div className="flex items-baseline justify-between">
+                                    <p>MC:{pessoa.mc} • </p>
+                                    <p>Principalidade {pessoa.preferenceRating} •</p>
+                                    <p> <strong> {pessoa.risk} </strong> Risco </p>
+
+                                </div>
+
+                                <div className="flex flex-col gap-2 text-sm text-gray-700 mt-2">
+
                                     <p>Email: <strong>{pessoa.lastUpdate}</strong></p>
                                     <p>Endereço: <strong>{pessoa.fullAddress}</strong></p>
                                     <p>Data de atualização: <strong>00/00/0000 </strong></p>
@@ -195,8 +210,8 @@ export default function CrudReport() {
                         ))}
                     </div>
 
-                    {/* Coluna Direita - Tabela */}
-                    <div className="w-full lg:w-4/5 bg-white p-4 rounded-lg shadow-md overflow-auto">
+                    
+                    <div className="w-full lg:w-4/6 bg-white p-4 rounded-lg shadow-md overflow-auto">
 
                         <h2 className="text-2xl font-bold text-[#3CB371] mb-4">Endividamento</h2>
                         <table className="w-full table-auto">
