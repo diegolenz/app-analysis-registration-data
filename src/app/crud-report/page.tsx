@@ -17,7 +17,7 @@ export default function CrudReport() {
     const crudReport = async () => {
         let dataPessoa = {};
         try {
-            const response = await fetch('https://run.mocky.io/v3/7418c556-0349-4141-bb41-71238728e329'); // Substitua pelo seu URL real
+            const response = await fetch('https://run.mocky.io/v3/6b1f2183-5f55-4059-9366-b4ee8ea79110'); 
             if (!response.ok) {
                 throw new Error(`Erro na chamada da API: ${response.statusText}`);
             }
@@ -37,7 +37,7 @@ export default function CrudReport() {
         }
 
         try {
-            const responseInvestimentos = await fetch('https://run.mocky.io/v3/279801db-d80a-47da-982e-f09e72cc386d'); // Substitua pelo seu URL real
+            const responseInvestimentos = await fetch('https://run.mocky.io/v3/f4b47cb8-b3e9-4822-b779-9c6be92e5146'); // Substitua pelo seu URL real
             if (!responseInvestimentos.ok) {
                 throw new Error(`Erro na chamada da API: ${responseInvestimentos.statusText}`);
             }
